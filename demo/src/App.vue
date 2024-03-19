@@ -55,9 +55,6 @@
 </template>
 
 <script>
-import * as firestoreService from '@/database/firestore'
-import * as storageService from '@/database/storage'
-
 import ChatContainer from './ChatContainer'
 
 export default {
@@ -115,66 +112,6 @@ export default {
 	},
 
 	methods: {
-		resetData() {
-			firestoreService.getAllRooms().then(({ data }) => {
-				data.forEach(async room => {
-					await firestoreService.getMessages(room.id).then(({ data }) => {
-						data.forEach(message => {
-							firestoreService.deleteMessage(room.id, message.id)
-							if (message.files) {
-								message.files.forEach(file => {
-									storageService.deleteFile(
-										this.currentUserId,
-										message.id,
-										file
-									)
-								})
-							}
-						})
-					})
-
-					firestoreService.deleteRoom(room.id)
-				})
-			})
-
-			firestoreService.getAllUsers().then(({ data }) => {
-				data.forEach(user => {
-					firestoreService.deleteUser(user.id)
-				})
-			})
-		},
-		async addData() {
-			this.updatingData = true
-
-			const user1 = this.users[0]
-			await firestoreService.addIdentifiedUser(user1._id, user1)
-
-			const user2 = this.users[1]
-			await firestoreService.addIdentifiedUser(user2._id, user2)
-
-			const user3 = this.users[2]
-			await firestoreService.addIdentifiedUser(user3._id, user3)
-
-			await firestoreService.addRoom({
-				users: [user1._id, user2._id],
-				lastUpdated: new Date()
-			})
-			await firestoreService.addRoom({
-				users: [user1._id, user3._id],
-				lastUpdated: new Date()
-			})
-			await firestoreService.addRoom({
-				users: [user2._id, user3._id],
-				lastUpdated: new Date()
-			})
-			await firestoreService.addRoom({
-				users: [user1._id, user2._id, user3._id],
-				lastUpdated: new Date()
-			})
-
-			this.updatingData = false
-			location.reload()
-		}
 	}
 }
 </script>
