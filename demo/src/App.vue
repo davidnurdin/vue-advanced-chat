@@ -58,7 +58,9 @@
 import ChatContainer from './ChatContainer'
 
 export default {
-	components: {
+  name: 'ContainerChat', // there is a `name: 'users'` key-value.
+  //
+  components: {
 		ChatContainer
 	},
 

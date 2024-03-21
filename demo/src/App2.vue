@@ -1,43 +1,36 @@
 <template>
-	<div class="window-container" :class="{ 'window-mobile': isDevice }">
-        <vue-advanced-chat
-          ref="chatWindow"
-          :height="screenHeight"
-          :theme="theme"
-          :current-user-id="currentUserId"
-          :rooms="JSON.stringify(rooms)"
-          :loading-rooms="loadingRooms"
-          :rooms-loaded="roomsLoaded"
-          :room-id="roomId"
-          :load-first-room="true"
-          :room-message="roomMessage"
-          :single-room="false"
-          :messages="JSON.stringify(messages)"
-          :messages-loaded="messagesLoaded"
-          @send-message="sendMessage($event.detail[0])"
-          @fetch-messages="fetchMessages($event.detail[0],$event.detail[1])"
-        >
 
-          <div slot="room-header">
-            This is a new room headerAAAAa
-            <div>okkk</div>
-          </div>
+  <chat-container
+    ref="chatWindow"
+    :height="screenHeight"
+    :theme="theme"
+    :roomsListOpened=true
+    :current-user-id="currentUserId"
+    :rooms="JSON.stringify(rooms)"
+    :loading-rooms="loadingRooms"
+    :rooms-loaded="roomsLoaded"
+    :room-id="roomId"
+    :load-first-room="true"
+    :room-message="roomMessage"
+    :single-room="false"
+    :messages="messages"
+    :messages-loaded="messagesLoaded"
+    @send-message="sendMessage"
+    @fetch-messages="fetchMessages"
+  >
+  </chat-container>
 
 
-        </vue-advanced-chat>
-  </div>
 </template>
 
 <script>
-import { parseTimestamp, formatTimestamp } from '@/utils/dates'
-import logoAvatar from '@/assets/logo.png'
-
-// import { register } from 'vue-advanced-chat'
-// import { register } from './../../dist/vue-advanced-chat.es.js'
-import { register } from './../../src/lib/index.js'
+import ChatContainer from '../../src/lib/ChatWindow'
 
 export default {
   name: 'OneTchat', // there is a `name: 'users'` key-value.
+  components: {
+    ChatContainer
+  },
 
   data() {
     return {
@@ -66,7 +59,7 @@ export default {
           // },
           // roomMessage: 'hii',
           users: [
-            {_id: '1', username: 'Duchnoun'},
+            { _id: '1', username: 'Duchnoun' },
             {
               _id: '2',
               username: 'Meg',
@@ -76,15 +69,15 @@ export default {
               }
             },
           ],
-          typingUsers: [ 2 ]
+          typingUsers: [2]
         },
         {
           roomId: '2',
           roomName: 'Clem',
           avatar: 'https://66.media.tumblr.com/avatar_c6a8eae4303e_512.pnj',
           users: [
-            {_id: '1', username: 'Duchnoun'},
-            {_id: '3', username: 'Clem'},
+            { _id: '1', username: 'Duchnoun' },
+            { _id: '3', username: 'Clem' },
           ]
         },
         {
@@ -92,9 +85,9 @@ export default {
           roomName: 'Salon grenoble',
           avatar: 'https://66.media.tumblr.com/avatar_c6a8eae4303e_512.pnj',
           users: [
-            {_id: '1', username: 'Duchnoun'},
-            {_id: '2', username: 'Meg'},
-            {_id: '3', username: 'Clem'},
+            { _id: '1', username: 'Duchnoun' },
+            { _id: '2', username: 'Meg' },
+            { _id: '3', username: 'Clem' },
           ]
         },
       ],
@@ -102,7 +95,6 @@ export default {
       messagesLoaded: false
     }
   },
-
 
   computed: {
     loadedRooms() {
@@ -113,9 +105,8 @@ export default {
     }
   },
 
-
   mounted() {
-    this.addCss()
+    // this.addCss()
     // this.fetchRooms()
     // firebaseService.updateUserOnlineStatus(this.currentUserId)
   },
@@ -127,7 +118,7 @@ export default {
         const styles = await import('./../../src/styles/index.scss')
         const style = document.createElement('style')
         style.innerHTML = styles.default
-        this.$refs.chatWindow.shadowRoot.appendChild(style)
+        // this.$refs.chatWindow.shadowRoot.appendChild(style)
       }
     },
 
@@ -151,7 +142,6 @@ export default {
       // this.resetRooms()
       // IT WORK LIKE THAT !
 
-
       this.messagesLoaded = false
       this.loadingMessages = true
       this.roomsLoaded = true
@@ -167,7 +157,7 @@ export default {
       // use timeout to mimic server fetched data
       setTimeout(() => {
         this.messagesLoaded = true
-       //  this.roomsLoaded = true
+        //  this.roomsLoaded = true
         // this.loadingRooms = false
         this.loadingMessages = false
 
@@ -221,79 +211,9 @@ export default {
     }
   }
 }
-register()
 
 </script>
 
-<style lang="scss" scoped>
-.window-container {
-	width: 100%;
-}
+<style lang="scss">
 
-.window-mobile {
-	form {
-		padding: 0 10px 10px;
-	}
-}
-
-form {
-	padding-bottom: 20px;
-}
-
-input {
-	padding: 5px;
-	width: 140px;
-	height: 21px;
-	border-radius: 4px;
-	border: 1px solid #d2d6da;
-	outline: none;
-	font-size: 14px;
-	vertical-align: middle;
-
-	&::placeholder {
-		color: #9ca6af;
-	}
-}
-
-button {
-	background: #1976d2;
-	color: #fff;
-	outline: none;
-	cursor: pointer;
-	border-radius: 4px;
-	padding: 8px 12px;
-	margin-left: 10px;
-	border: none;
-	font-size: 14px;
-	transition: 0.3s;
-	vertical-align: middle;
-
-	&:hover {
-		opacity: 0.8;
-	}
-
-	&:active {
-		opacity: 0.6;
-	}
-
-	&:disabled {
-		cursor: initial;
-		background: #c6c9cc;
-		opacity: 0.6;
-	}
-}
-
-.button-cancel {
-	color: #a8aeb3;
-	background: none;
-	margin-left: 5px;
-}
-
-select {
-	vertical-align: middle;
-	height: 33px;
-	width: 152px;
-	font-size: 13px;
-	margin: 0 !important;
-}
 </style>

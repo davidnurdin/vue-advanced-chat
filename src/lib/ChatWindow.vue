@@ -29,7 +29,6 @@
 					<slot :name="el.slot" v-bind="data" />
 				</template>
 			</rooms-list>
-
 			<room
 				:current-user-id="currentUserId"
 				:rooms="roomsCasted"
